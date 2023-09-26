@@ -1,0 +1,24 @@
+[
+  {
+    "email": "String",
+    "user": "String",
+    "password": "String"
+  },
+  {
+    "release_date": "Date",
+    "album_name": "String",
+    "label_produser": "String"
+  },
+  {
+    "artist": "String",
+    "song_title": "String",
+    "playlist_relation": "String",
+    "song_genre": "Array",
+    "release_date": "Date",
+    "song_listener": "Number",
+    "song_duration": "Number"
+  },
+  {
+    "playlist_name": "String"
+  }
+]
