@@ -1,5 +1,3 @@
-/** @format */
-
 const mongoose = require('mongoose');
 
 const urlServer = 'mongodb://localhost:27017/';
@@ -14,7 +12,7 @@ mongoose
     console.log('Success connected to MongoDB!');
   })
   .catch((err) => {
-    console.error(`Connection error to MongoDB ${err.name}`);
+    console.error(`Connection error to MongoDB ${err}`);
   });
 
 module.exports = mongoose;

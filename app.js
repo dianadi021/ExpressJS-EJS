@@ -1,19 +1,19 @@
-require('./apps/mongoose/connect');
+/** @format */
 
-const express = require('express')
-const app = express()
-const port = 3000
+const { RouterMain, RouterToken, RouterUsers } = require('./api/bridges');
 
-const JWTRouter = require('./apps/routers/JWT.router');
-const SongRouter = require('./apps/routers/Song.router');
-const SongAlbumRouter = require('./apps/routers/SongAlbum.router');
-const SongPlaylistRouter = require('./apps/routers/SongPlaylist.router');
+const express = require('express');
+const app = express();
+const port = 9000;
 
-app.use(JWTRouter)
-app.use(SongRouter)
-app.use(SongAlbumRouter)
-app.use(SongPlaylistRouter)
+try {
+  app.use(RouterMain);
+  app.use(RouterToken);
+  app.use(RouterUsers);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  app.listen(port, () => {
+    console.log(`App listening on port ${port}`);
+  });
+} catch (error) {
+  console.log(`App listening on port Error: ${error}`);
+}
