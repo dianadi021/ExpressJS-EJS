@@ -21,6 +21,13 @@ const UsersSchema = mongoose.Schema(
     contact_number: { type: String },
     role: { type: String },
   },
+  {
+    writeConcern: {
+      w: 'majority',
+      j: true,
+      wtimeout: 1000,
+    },
+  },
   { timestamps: true }
 );
 

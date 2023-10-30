@@ -1,10 +1,11 @@
-const mongoose = require('mongoose');
+/** @format */
 
-const urlServer = 'mongodb://localhost:27017/';
+const mongoose = require('mongoose');
 const dbName = 'BasicCRUD';
+const urlServer = `mongodb://localhost:27017/${dbName}`;
 
 mongoose
-  .connect(`${urlServer}${dbName}`, {
+  .connect(`${urlServer}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

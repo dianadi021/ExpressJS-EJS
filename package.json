@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-simple_crud",
+  "name": "expressjs-crud",
   "version": "1.0.0",
   "description": "Simple CRUD yang dibuat menggunakan NodeJS [Express, Mongoose, JWT]",
   "main": "app.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dianadi021/NodeJS-Simple_CRUD.git"
+    "url": "git+https://github.com/dianadi021/ExpressJS-CRUD.git"
   },
   "keywords": [
     "nodejs",
@@ -22,9 +22,9 @@
   "author": "dianadi021",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dianadi021/NodeJS-Simple_CRUD/issues"
+    "url": "https://github.com/dianadi021/ExpressJS-CRUD/issues"
   },
-  "homepage": "https://github.com/dianadi021/NodeJS-Simple_CRUD#readme",
+  "homepage": "https://github.com/dianadi021/ExpressJS-CRUD#readme",
   "devDependencies": {
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
