@@ -15,7 +15,12 @@ const GetIDNDateFormat = (InputDate) => {
   return convertDate.toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
 };
 
+const GetIDNCurrency = (Money) => {
+  return Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Money);
+};
+
 module.exports = {
   GetCurrentIDNDate,
   GetIDNDateFormat,
+  GetIDNCurrency,
 };

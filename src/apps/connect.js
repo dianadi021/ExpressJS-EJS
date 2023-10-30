@@ -1,12 +1,11 @@
 /** @format */
 
 const mongoose = require('mongoose');
-
-const urlServer = 'mongodb://localhost:27017/';
 const dbName = 'BasicCRUD';
+const urlServer = `mongodb://localhost:27017/${dbName}`;
 
 mongoose
-  .connect(`${urlServer}${dbName}`, {
+  .connect(`${urlServer}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -14,7 +13,7 @@ mongoose
     console.log('Success connected to MongoDB!');
   })
   .catch((err) => {
-    console.error(`Connection error to MongoDB ${err.name}`);
+    console.error(`Connection error to MongoDB ${err}`);
   });
 
 module.exports = mongoose;
