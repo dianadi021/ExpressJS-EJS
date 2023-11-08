@@ -1,6 +1,6 @@
 /** @format */
 
-const mongoose = require('mongoose');
+const mongoose = require('../apps/connect');
 
 const UsersSchema = mongoose.Schema(
   {
@@ -30,5 +30,18 @@ const UsersSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+const UsersModel = mongoose.model('Users', UsersSchema);
 
-module.exports = mongoose.model('Users', UsersSchema);
+const FormatInputUser = {
+  username: 'String',
+  password: 'Combine (String/Number/Symbol)',
+  email: 'String',
+  full_name: { first_name: 'String', last_name: 'String' },
+  address: 'String',
+  contact_number: 'String',
+};
+
+module.exports = {
+  UsersModel,
+  FormatInputUser
+};
