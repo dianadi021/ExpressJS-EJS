@@ -1,31 +1,25 @@
 /** @format */
 
-const Convert = require('../utils/convert');
-const UsersModel = require('../models/users.model');
+const { UsersModel, FormatInputUser } = require('../models/users.model');
+const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue } = require('../utils/utils');
 
-const CreateUsersData = async (DataPostman, res) => {
+const CreateUsersData = async (req, res) => {
   try {
-    const { username, password, email, full_name } = DataPostman.body;
-    const { first_name, last_name } = full_name;
-    const formatInputData = {
-      username: 'String',
-      password: 'Combine (String/Number/Symbol)',
-      email: 'String',
-      full_name: { first_name: 'String', last_name: 'String' },
-    };
+    const { username, password, email, full_name } = req.body ? req.body : JSON.parse(req.body.data);
     if (!username || !password || !email || !full_name) {
-      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: formatInputData });
+      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputUser });
     }
-    const isUsernameNotEmptyValue = username == '' || username == ' ';
-    const isPasswordNotEmptyValue = password == '' || password == ' ';
-    const isEmailNotEmptyValue = email == '' || email == ' ';
-    const isFullNameNotEmptyValue = first_name == '' || first_name == ' ' || last_name == '' || first_name == ' ';
-    if (isUsernameNotEmptyValue || isPasswordNotEmptyValue || isEmailNotEmptyValue || isFullNameNotEmptyValue) {
-      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: formatInputData });
+    const { first_name, last_name } = full_name;
+    const isUsernameEmptyValue = CheckingIsNilValue(username);
+    const isPasswordEmptyValue = CheckingIsNilValue(password);
+    const isEmailEmptyValue = CheckingIsNilValue(email);
+    const isFullNameEmptyValue = CheckingIsNilValue(first_name) || CheckingIsNilValue(last_name);
+    if (isUsernameEmptyValue || isPasswordEmptyValue || isEmailEmptyValue || isFullNameEmptyValue) {
+      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputUser });
     }
-    const isUsernameDocumentHasInDatabase = await UsersModel.find({ username: username.toLowerCase() });
-    const isEmailDocumentHasInDatabase = await UsersModel.find({ email: email.toLowerCase() });
-    if (isUsernameDocumentHasInDatabase.length > 0 || isEmailDocumentHasInDatabase.length > 0) {
+    const isUsernameWasUsed = await UsersModel.find({ username: username.toLowerCase() });
+    const isEmailWasUsed = await UsersModel.find({ email: email.toLowerCase() });
+    if (isUsernameWasUsed.length >= 1 || isEmailWasUsed.length >= 1) {
       return res.status(403).json({ status: 'failed', message: `username atau email sudah terdaftar! harap untuk menggunakan yang lain.` });
     }
     const newUser = UsersModel({
@@ -46,87 +40,55 @@ const CreateUsersData = async (DataPostman, res) => {
   }
 };
 
-const GetUsersData = async (DataPostman, res) => {
+const GetUsersData = async (req, res) => {
   try {
-    const queryParamsShouldExec = ['username', 'email', 'first_name', 'last_name'];
-    let isCommandShouldExec = false;
-    let { username, email, first_name, last_name } = DataPostman.body;
-    for (const key in DataPostman.body) {
-      if (queryParamsShouldExec.includes(key)) {
-        isCommandShouldExec = queryParamsShouldExec.includes(key);
-        break;
-      }
-    }
-    if (!isCommandShouldExec) {
-      for (const key in DataPostman.query) {
-        if (queryParamsShouldExec.includes(key)) {
-          isCommandShouldExec = queryParamsShouldExec.includes(key);
-          ({ username, email, first_name, last_name } = DataPostman.query);
-          break;
-        }
-      }
-    }
-
-    if (!isCommandShouldExec && (Object.keys(DataPostman.query).length > 0 || Object.keys(DataPostman.body).length > 0)) {
+    const syntaxExec = ['username', 'email', 'first_name', 'last_name', 'document', 'page'];
+    const { username, email, first_name, last_name, document, page } = CheckingKeyReq(req.body, req.query, req.body.data);
+    const isHasSyntax = CheckingKeyReqSyntax(syntaxExec, req.body, req.query, req.body.data);
+    if (!isHasSyntax && Object.keys(CheckingKeyReq(req.body, req.query, req.body.data)).length >= 1) {
+      // const isDocumentHasInDatabase = await UsersModel.aggregate([
+      //   {
+      //     $project: {
+      //       username: 1,
+      //       email: 1,
+      //       full_name: 1,
+      //     },
+      //   },
+      //   {
+      //     $match: toFilter,
+      //   },
+      // ]);
+      // if (!isDocumentHasInDatabase) {
+      //   return res.status(404).json({ status: 'success', message: `Tidak ada data user tersebut.` });
+      // }
+      // return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
       return res.status(404).json({ status: 'failed', message: `Gagal mengambil data! Query tidak sesuai.` });
     }
-
-    if (isCommandShouldExec) {
-      if (username || email || first_name || last_name) {
-        if (Object.keys(DataPostman.query).length > 1 || Object.keys(DataPostman.body).length > 1) {
-          // const isDocumentHasInDatabase = await UsersModel.aggregate([
-          //   {
-          //     $project: {
-          //       username: 1,
-          //       email: 1,
-          //       full_name: 1,
-          //     },
-          //   },
-          //   {
-          //     $match: toFilter,
-          //   },
-          // ]);
-          // if (!isDocumentHasInDatabase) {
-          //   return res.status(404).json({ status: 'success', message: `Tidak ada data user tersebut.` });
-          // }
-          // return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
-          return res.status(404).json({ status: 'failed', message: `Gagal mengambil data! Query tidak sesuai.` });
-        }
-        let toFilter = username ? { username: username } : false;
-        toFilter = email ? { email: email } : toFilter;
-        toFilter = first_name ? { full_name: { first_name: first_name } } : toFilter;
-        toFilter = last_name ? { full_name: { last_name: last_name } } : toFilter;
-        const isDocumentHasInDatabase = await UsersModel.aggregate([
-          {
-            $project: {
-              _id: 1,
-              username: 1,
-              email: 1,
-              full_name: 1,
-            },
-          },
-          {
-            $match: toFilter,
-          },
-        ]);
-        if (isDocumentHasInDatabase.length < 1) {
-          return res.status(404).json({ status: 'success', message: `Tidak ada data user tersebut.` });
-        }
-        return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
+    if (isHasSyntax && (username || email || first_name || last_name)) {
+      let toFilter = username ? { username: username.toLowerCase() } : false;
+      toFilter = email ? { email: email.toLowerCase() } : toFilter;
+      toFilter = first_name ? { full_name: { first_name: first_name } } : toFilter;
+      toFilter = last_name ? { full_name: { last_name: last_name } } : toFilter;
+      const isDocumentHasInDatabase = await UsersModel.aggregate([
+        { $project: { _id: 1, username: 1, email: 1, full_name: 1 } },
+        { $match: toFilter },
+      ]);
+      if (isDocumentHasInDatabase.length < 1) {
+        return res.status(404).json({ status: 'success', message: `Tidak ada data user tersebut.` });
       }
-      return res.status(404).json({ status: 'failed', message: `Tidak ada data user tersebut.` });
+      return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
     }
 
-    const isDocumentHasInDatabase = await UsersModel.aggregate([
-      {
-        $project: {
-          _id: 1,
-          username: 1,
-          email: 1,
-          full_name: 1,
-        },
-      },
-    ]);
+    // START PAGINATION ($SKIP & $LIMIT)
+    const isDocumentHasInDatabase =
+      !page && !document
+        ? await UsersModel.aggregate([{ $project: { _id: 1, username: 1, email: 1, full_name: 1 } }])
+        : await UsersModel.aggregate([
+            { $project: { _id: 1, username: 1, email: 1, full_name: 1 } },
+            { $skip: (parseInt(page) - 1) * parseInt(document) },
+            { $limit: parseInt(document) },
+          ]);
+    // END PAGINATION ($SKIP & $LIMIT)
     if (isDocumentHasInDatabase.length > 0) {
       return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
     }
@@ -136,9 +98,9 @@ const GetUsersData = async (DataPostman, res) => {
   }
 };
 
-const GetUserDetails = async (DataPostman, res) => {
+const GetUserDetails = async (req, res) => {
   try {
-    const { id } = DataPostman.params;
+    let { id } = req.params;
     const isDocumentHasInDatabase = await UsersModel.findById(id);
     if (isDocumentHasInDatabase) {
       return res.status(200).json({ status: 'success', message: `Berhasil mengambil data user.`, data: isDocumentHasInDatabase });
@@ -149,58 +111,40 @@ const GetUserDetails = async (DataPostman, res) => {
   }
 };
 
-const UpdateUsersData = async (DataPostman, res) => {
+const UpdateUsersData = async (req, res) => {
   try {
-    const { id } = DataPostman.params;
+    const { id } = req.params;
     const isDocumentHasInDatabase = await UsersModel.findById(id);
     if (!isDocumentHasInDatabase) {
       return res.status(404).json({ status: 'success', message: `Tidak ada data user.` });
     }
-    const { username, password, email, full_name, contact_number, address, role } = DataPostman.body;
-    const formatInputData = {
-      username: 'String',
-      password: 'Combine (String/Number/Symbol)',
-      email: 'String',
-      full_name: { first_name: 'String', last_name: 'String' },
-    };
+    const { username, password, email, full_name, contact_number, address, role } = CheckingKeyReq(req.body, req.query, req.body.data);
     if (!username || !password || !email || !full_name) {
-      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: formatInputData });
+      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputUser });
     }
-    let isDocumentsWasDupplicate = await UsersModel.aggregate([
-      {
-        $match: { username: username },
-      },
-    ]);
-    if (isDocumentsWasDupplicate.length > 0) {
-      return res.status(404).json({ status: 'success', message: `username atau email sudah terdaftar!` });
-    }
-    isDocumentsWasDupplicate = await UsersModel.aggregate([
-      {
-        $match: { email: email },
-      },
-    ]);
-    if (isDocumentsWasDupplicate.length > 0) {
-      return res.status(404).json({ status: 'success', message: `username atau email sudah terdaftar!` });
+    const isUsernameWasUsed = await UsersModel.find({ username: username.toLowerCase() });
+    const isEmailWasUsed = await UsersModel.find({ email: email.toLowerCase() });
+    const isUsernameIDReady = isUsernameWasUsed.length >= 1 ? isUsernameWasUsed[0]._id : id;
+    const isEmailIDReady = isEmailWasUsed.length >= 1 ? isEmailWasUsed[0]._id : id;
+    if (isUsernameIDReady != id || isEmailIDReady != id) {
+      return res.status(403).json({ status: 'failed', message: `username atau email sudah terdaftar! harap untuk menggunakan yang lain.` });
     }
     const { first_name, last_name } = full_name;
-    const isUsernameNotEmptyValue = username == '' || username == ' ';
-    const isPasswordNotEmptyValue = password == '' || password == ' ';
-    const isEmailNotEmptyValue = email == '' || email == ' ';
-    const isFullNameNotEmptyValue = first_name == '' || first_name == ' ' || last_name == '' || last_name == ' ';
-    const isContactNumberNotEmptyValue = contact_number == '' || contact_number == ' ';
-    const isAddressNotEmptyValue = address == '' || address == ' ';
-    const isRoleNotEmptyValue = role == '' || role == ' ';
-    if (isUsernameNotEmptyValue || isPasswordNotEmptyValue || isEmailNotEmptyValue || isFullNameNotEmptyValue) {
-      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: formatInputData });
+    const isUsernameEmptyValue = CheckingIsNilValue(username);
+    const isPasswordEmptyValue = CheckingIsNilValue(password);
+    const isEmailEmptyValue = CheckingIsNilValue(email);
+    const isFullNameEmptyValue = CheckingIsNilValue(first_name) || CheckingIsNilValue(last_name);
+    if (isUsernameEmptyValue || isPasswordEmptyValue || isEmailEmptyValue || isFullNameEmptyValue) {
+      return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputUser });
     }
     const updateUser = {
       username: username.toLowerCase(),
       password,
       email: email.toLowerCase(),
       full_name,
-      contact_number: isContactNumberNotEmptyValue ? null : contact_number,
-      address: isAddressNotEmptyValue ? null : address,
-      role: isRoleNotEmptyValue ? null : role,
+      contact_number: contact_number ? contact_number : null,
+      address: address ? address : null,
+      role: role ? role : null,
     };
     return await UsersModel.findByIdAndUpdate(id, updateUser)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data user.` }))
@@ -210,9 +154,9 @@ const UpdateUsersData = async (DataPostman, res) => {
   }
 };
 
-const DeleteUserData = async (DataPostman, res) => {
+const DeleteUserData = async (req, res) => {
   try {
-    const { id } = DataPostman.params;
+    const { id } = req.params;
     const isDocumentHasInDatabase = await UsersModel.findById(id);
     if (!isDocumentHasInDatabase) {
       return res.status(404).json({ status: 'success', message: `Tidak ada data user.` });
