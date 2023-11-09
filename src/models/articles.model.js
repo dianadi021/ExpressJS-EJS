@@ -5,10 +5,10 @@ const mongoose = require('../apps/connect');
 const ArticlesSchema = mongoose.Schema(
   {
     title: { type: String },
-    category: { type: String },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'CategoryArticles' },
     description: { type: String },
     body: { type: String },
-    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
     thumbnailImage: { type: String },
   },
   {
@@ -24,9 +24,10 @@ const ArticlesModel = mongoose.model('Articles', ArticlesSchema);
 
 const FormatInputArticle = {
   title: 'String',
+  category: 'String',
   description: 'String',
   body: 'String',
-  thumbnailImage: 'File',
+  thumbnailImage: 'String',
 };
 
 module.exports = {

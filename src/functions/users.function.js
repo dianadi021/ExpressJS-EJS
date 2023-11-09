@@ -111,7 +111,7 @@ const GetUserDetails = async (req, res) => {
   }
 };
 
-const UpdateUsersData = async (req, res) => {
+const UpdateUserData = async (req, res) => {
   try {
     const { id } = req.params;
     const isDocumentHasInDatabase = await UsersModel.findById(id);
@@ -137,7 +137,7 @@ const UpdateUsersData = async (req, res) => {
     if (isUsernameEmptyValue || isPasswordEmptyValue || isEmailEmptyValue || isFullNameEmptyValue) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputUser });
     }
-    const updateUser = {
+    const updateUser = UsersModel({
       username: username.toLowerCase(),
       password,
       email: email.toLowerCase(),
@@ -145,7 +145,7 @@ const UpdateUsersData = async (req, res) => {
       contact_number: contact_number ? contact_number : null,
       address: address ? address : null,
       role: role ? role : null,
-    };
+    });
     return await UsersModel.findByIdAndUpdate(id, updateUser)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data user.` }))
       .catch((err) => res.status(500).json({ status: 'failed', message: `Gagal memperbaharui data user. Function Catch: ${err}` }));
@@ -173,6 +173,6 @@ module.exports = {
   CreateUsersData,
   GetUsersData,
   GetUserDetails,
-  UpdateUsersData,
+  UpdateUserData,
   DeleteUserData,
 };

@@ -19,7 +19,7 @@ const UsersSchema = mongoose.Schema(
     },
     address: { type: String },
     contact_number: { type: String },
-    role: { type: String },
+    role: { type: mongoose.Schema.Types.ObjectId, ref: 'RolesUsers' },
   },
   {
     writeConcern: {

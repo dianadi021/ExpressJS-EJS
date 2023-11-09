@@ -1,6 +1,6 @@
 /** @format */
 
-const { RouterMain, RouterToken, RouterUsers, RouterArticles } = require('./src/bridges');
+const { RouterMain, RouterToken, RouterUsers, RouterArticles, RouterRolesUsers, RouterCategoryArticles } = require('./src/bridges');
 const path = require('path');
 
 const express = require('express');
@@ -16,6 +16,8 @@ try {
   app.use(RouterToken);
   app.use(RouterUsers);
   app.use(RouterArticles);
+  app.use(RouterRolesUsers);
+  app.use(RouterCategoryArticles);
 
   app.listen(port, () => {
     console.log(`App listening on http://localhost:${port}`);
