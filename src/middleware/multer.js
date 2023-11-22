@@ -9,8 +9,8 @@ const mulStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    // cb(null, Date.now() + ext);
-    cb(null, file.originalname);
+    cb(null, Date.now() + ext);
+    // cb(null, file.originalname);
   },
 });
 const mulUpload = multer({

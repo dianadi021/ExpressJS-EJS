@@ -1,6 +1,12 @@
 /** @format */
 
-const { CreateArticlesData, GetArticlesData, GetArticleDetails, UpdateArticleData, DeleteArticleData } = require('../functions/articles.function');
+const {
+  CreateArticlesData,
+  GetArticlesData,
+  GetArticleDetails,
+  UpdateArticleData,
+  DeleteArticleData,
+} = require('../functions/articles.function');
 const { CheckingTokenAuthorization } = require('../middleware/auth');
 const { mulUpload, upload } = require('../middleware/multer');
 
@@ -9,7 +15,7 @@ const router = express.Router();
 
 router.use(express.json());
 
-router.post('/articles', mulUpload.single('image'), async (req, res) => {
+router.post('/articles', mulUpload.single('thumbnailImage'), async (req, res) => {
   // router.post('/articles', async (req, res) => {
   try {
     await CreateArticlesData(req, res);
@@ -34,7 +40,7 @@ router.get('/articles/:id', async (req, res) => {
   }
 });
 
-router.put('/articles/:id', async (req, res) => {
+router.put('/articles/:id', mulUpload.single('thumbnailImage'), async (req, res) => {
   try {
     await UpdateArticleData(req, res);
   } catch (err) {

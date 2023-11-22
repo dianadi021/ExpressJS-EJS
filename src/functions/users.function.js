@@ -1,11 +1,11 @@
 /** @format */
 
 const { UsersModel, FormatInputUser } = require('../models/users.model');
-const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue } = require('../utils/utils');
+const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue, CheckingObjectValue } = require('../utils/utils');
 
 const CreateUsersData = async (req, res) => {
   try {
-    const { username, password, email, full_name } = req.body ? req.body : JSON.parse(req.body.data);
+    const { username, password, email, full_name } = req.body.data ? JSON.parse(req.body.data) : req.body;
     if (!username || !password || !email || !full_name) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputUser });
     }
@@ -137,15 +137,10 @@ const UpdateUserData = async (req, res) => {
     if (isUsernameEmptyValue || isPasswordEmptyValue || isEmailEmptyValue || isFullNameEmptyValue) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputUser });
     }
-    const updateUser = UsersModel({
-      username: username.toLowerCase(),
-      password,
-      email: email.toLowerCase(),
-      full_name,
-      contact_number: contact_number ? contact_number : null,
-      address: address ? address : null,
-      role: role ? role : null,
-    });
+    let updateUser = { username: username.toLowerCase(), password, email: email.toLowerCase(), full_name };
+    updateUser = CheckingObjectValue(updateUser, { role });
+    updateUser = CheckingObjectValue(updateUser, { address });
+    updateUser = CheckingObjectValue(updateUser, { contact_number });
     return await UsersModel.findByIdAndUpdate(id, updateUser)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data user.` }))
       .catch((err) => res.status(500).json({ status: 'failed', message: `Gagal memperbaharui data user. Function Catch: ${err}` }));

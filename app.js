@@ -8,8 +8,10 @@ const app = express();
 const port = 9000;
 
 try {
-  // app.use(express.static(path.join(__dirname, "/public/")));
   // app.use('/uploads/images', express.static(path.join(__dirname, '/src/public/uploads/images')));
+  app.set('views', path.join(__dirname, '/src/public/views'));
+  app.set('view engine', 'ejs');
+  app.use(express.static(path.join(__dirname, "/src/public/")));
 
   // Main API
   app.use(RouterMain);

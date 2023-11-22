@@ -35,8 +35,41 @@ const CheckingKeyReqSyntax = (ValidSyntax, Req1, Req2, Req3) => {
   return flag;
 };
 
+const CheckingObjectValue = (ParentObject, AddKeyObject) => {
+  if (AddKeyObject[Object.keys(AddKeyObject)]) {
+    ParentObject[Object.keys(AddKeyObject)] = AddKeyObject[Object.keys(AddKeyObject)] ? AddKeyObject[Object.keys(AddKeyObject)] : null;
+  }
+  return ParentObject;
+};
+
+const GetFilteredDocument = async (Model, MatchQueries) => {
+  let result = await Model.aggregate([
+    {
+      $lookup: {
+        from: 'categoryarticles',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'categories_article',
+      },
+    },
+    {
+      $match: {
+        categories_article: {
+          $elemMatch: {
+            categoryname: MatchQueries,
+          },
+        },
+      },
+    },
+  ]);
+  result = result.length < 1 ? (result = await Model.find()) : result;
+  return result;
+};
+
 module.exports = {
   CheckingIsNilValue,
   CheckingKeyReq,
   CheckingKeyReqSyntax,
+  CheckingObjectValue,
+  GetFilteredDocument,
 };

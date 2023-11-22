@@ -1,12 +1,12 @@
 /** @format */
 
-const { ArticlesModel, FormatInputArticle } = require('../models/articles.model');
-const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue } = require('../utils/utils');
+const { mongoose, ArticlesModel, FormatInputArticle } = require('../models/articles.model');
+const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue, CheckingObjectValue } = require('../utils/utils');
 
 const CreateArticlesData = async (req, res) => {
   try {
-    const { title, category, description, body, thumbnailImage, author } = req.body ? req.body : JSON.parse(req.body.data);
-    if (!title || !category || !description || !body || !thumbnailImage) {
+    const { title, category, description, body, author, link } = req.body.data ? JSON.parse(req.body.data) : req.body;
+    if (!title || !description || !body) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputArticle });
     }
     const isTitleEmptyValue = CheckingIsNilValue(title);
@@ -17,12 +17,14 @@ const CreateArticlesData = async (req, res) => {
         .status(404)
         .json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputArticle });
     }
+    const { path, filename } = req.file ? req.file : { path: null, filename: null };
     const newArticles = ArticlesModel({
       title,
-      category: category ? category : null,
+      link: link ? link : null,
+      category: CheckingIsNilValue(category) ? null : category.length == 1 ? category : new Set(category),
       description,
       body,
-      thumbnailImage,
+      thumbnailImage: filename ? filename : null,
       author: author ? author : null,
     });
     return await newArticles
@@ -60,9 +62,9 @@ const GetArticlesData = async (req, res) => {
     // START PAGINATION ($SKIP & $LIMIT)
     const isDocumentHasInDatabase =
       !page && !document
-        ? await ArticlesModel.aggregate([{ $project: { _id: 1, title: 1, description: 1, author: 1 } }])
+        ? await ArticlesModel.aggregate([{ $project: { _id: 1, title: 1, category: 1, description: 1, author: 1 } }])
         : await ArticlesModel.aggregate([
-            { $project: { _id: 1, title: 1, description: 1, author: 1 } },
+            { $project: { _id: 1, title: 1, category: 1, description: 1, author: 1 } },
             { $skip: (parseInt(page) - 1) * parseInt(document) },
             { $limit: parseInt(document) },
           ]);
@@ -79,8 +81,19 @@ const GetArticlesData = async (req, res) => {
 const GetArticleDetails = async (req, res) => {
   try {
     let { id } = req.params;
-    const isDocumentHasInDatabase = await ArticlesModel.findById(id);
-    if (isDocumentHasInDatabase) {
+    let isDocumentHasInDatabase = await ArticlesModel.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'categoryarticles',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+    ]);
+    isDocumentHasInDatabase = !isDocumentHasInDatabase ? await ArticlesModel.findById(id) : isDocumentHasInDatabase;
+    if (isDocumentHasInDatabase.length >= 1) {
       return res.status(200).json({ status: 'success', message: `Berhasil mengambil data artikel.`, data: isDocumentHasInDatabase });
     }
     return res.status(404).json({ status: 'success', message: `Tidak ada data artikel.` });
@@ -96,15 +109,18 @@ const UpdateArticleData = async (req, res) => {
     if (!isDocumentHasInDatabase) {
       return res.status(404).json({ status: 'success', message: `Tidak ada data artikel.` });
     }
-    const { title, category, description, body, thumbnailImage, author } = req.body ? req.body : JSON.parse(req.body.data);
-    const updateArticle = ArticlesModel({
-      title,
-      category: category ? category : null,
-      description,
-      body,
-      thumbnailImage,
-      author: author ? author : null,
-    });;
+    const { title, category, description, body, thumbnailImage, author, link } = req.body.data ? JSON.parse(req.body.data) : req.body;
+    let updateArticle = {};
+    updateArticle = CheckingObjectValue(updateArticle, { title });
+    updateArticle = CheckingObjectValue(updateArticle, { link });
+    updateArticle = CheckingObjectValue(updateArticle, {
+      category: CheckingIsNilValue(category) ? null : category ? Array.from(new Set(category)) : category,
+    });
+    updateArticle = CheckingObjectValue(updateArticle, { description });
+    updateArticle = CheckingObjectValue(updateArticle, { body });
+    updateArticle = CheckingObjectValue(updateArticle, { author });
+    const { path, filename } = req.file ? req.file : { path: null, filename: null };
+    updateArticle = CheckingObjectValue(updateArticle, { thumbnailImage: filename ? filename : null });
     return await ArticlesModel.findByIdAndUpdate(id, updateArticle)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data artikel.` }))
       .catch((err) => res.status(500).json({ status: 'failed', message: `Gagal memperbaharui data artikel. Function Catch: ${err}` }));
