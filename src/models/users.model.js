@@ -21,14 +21,14 @@ const UsersSchema = mongoose.Schema(
     contact_number: { type: String },
     role: { type: mongoose.Schema.Types.ObjectId, ref: 'RolesUsers' },
   },
+  { timestamps: true },
   {
     writeConcern: {
       w: 'majority',
       j: true,
       wtimeout: 1000,
     },
-  },
-  { timestamps: true }
+  }
 );
 const UsersModel = mongoose.model('Users', UsersSchema);
 
@@ -43,5 +43,5 @@ const FormatInputUser = {
 
 module.exports = {
   UsersModel,
-  FormatInputUser
+  FormatInputUser,
 };

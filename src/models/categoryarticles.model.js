@@ -7,6 +7,7 @@ const CategoryArticlesSchema = mongoose.Schema(
     categoryname: { type: String, required: true },
     description: { type: String },
   },
+  { timestamps: true },
   {
     writeConcern: {
       w: 'majority',
@@ -14,7 +15,6 @@ const CategoryArticlesSchema = mongoose.Schema(
       wtimeout: 1000,
     },
   },
-  { timestamps: true }
 );
 const CategoryArticlesModel = mongoose.model('CategoryArticles', CategoryArticlesSchema);
 

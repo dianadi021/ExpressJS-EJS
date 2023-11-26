@@ -5,7 +5,7 @@ const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue } = require('..
 
 const CreateRolesUsersData = async (req, res) => {
   try {
-    const { rolename, rolelevel } = req.body ? req.body : JSON.parse(req.body.data);
+    const { rolename, rolelevel } = req.body.data ? JSON.parse(req.body.data) : req.body;
     if (!rolename || !rolelevel) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputRolesUsers });
     }
@@ -17,13 +17,13 @@ const CreateRolesUsersData = async (req, res) => {
         .json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputRolesUsers });
     }
     const isRoleNameWasUsed = await RolesUsersModel.find({ rolename: rolename.toLowerCase() });
-    const isRoleLevelWasUsed = await RolesUsersModel.find({ rolelevel: rolelevel.toLowerCase() });
+    const isRoleLevelWasUsed = await RolesUsersModel.find({ rolelevel: rolelevel });
     if (isRoleNameWasUsed.length >= 1 || isRoleLevelWasUsed.length >= 1) {
       return res
         .status(403)
         .json({ status: 'failed', message: `Nama Role atau Level Role sudah tersedia! harap untuk menggunakan yang lain.` });
     }
-    const newRole = RolesUsersModel({ rolename: rolename.toLowerCase(), rolelevel: rolelevel.toLowerCase() });
+    const newRole = RolesUsersModel({ rolename: rolename.toLowerCase(), rolelevel: rolelevel });
     return await newRole
       .save()
       .then((result) => res.status(201).json({ status: 'success', message: `Berhasil membuat role.` }))
@@ -43,7 +43,7 @@ const GetRoleData = async (req, res) => {
     }
     if (isHasSyntax && (rolename || rolelevel)) {
       let toFilter = rolename ? { rolename: rolename.toLowerCase() } : false;
-      toFilter = rolelevel ? { rolelevel: rolelevel.toLowerCase() } : toFilter;
+      toFilter = rolelevel ? { rolelevel: rolelevel } : toFilter;
       const isDocumentHasInDatabase = await RolesUsersModel.aggregate([
         { $project: { _id: 1, rolename: 1, rolelevel: 1 } },
         { $match: toFilter },
@@ -98,7 +98,7 @@ const UpdateRoleData = async (req, res) => {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputRolesUsers });
     }
     const isRoleNameWasUsed = await RolesUsersModel.find({ rolename: rolename.toLowerCase() });
-    const isRoleLevelWasUsed = await RolesUsersModel.find({ rolelevel: rolelevel.toLowerCase() });
+    const isRoleLevelWasUsed = await RolesUsersModel.find({ rolelevel: rolelevel });
     const isRoleNameIDReady = isRoleNameWasUsed.length >= 1 ? isRoleNameWasUsed[0]._id : id;
     const isRoleLevelIDReady = isRoleLevelWasUsed.length >= 1 ? isRoleLevelWasUsed[0]._id : id;
     if (isRoleNameIDReady != id || isRoleLevelIDReady != id) {
@@ -113,7 +113,7 @@ const UpdateRoleData = async (req, res) => {
         .status(404)
         .json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputRolesUsers });
     }
-    const updateRole = RolesUsersModel({ rolename: rolename.toLowerCase(), rolelevel: rolelevel.toLowerCase() });
+    const updateRole = { rolename: rolename.toLowerCase(), rolelevel: rolelevel };
     return await RolesUsersModel.findByIdAndUpdate(id, updateRole)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data role.` }))
       .catch((err) => res.status(500).json({ status: 'failed', message: `Gagal memperbaharui data role. Function Catch: ${err}` }));

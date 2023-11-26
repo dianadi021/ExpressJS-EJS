@@ -1,4 +1,5 @@
 /** @format */
+const { GetDatas } = require('../functions/main.function');
 
 const express = require('express');
 const router = express.Router();
@@ -13,11 +14,13 @@ router.post('/', (req, res) => {
   }
 });
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    res.status(200).json({ status: 'success', message: 'Resource connected' });
+    await GetDatas(req, res);
+    // res.status(200).json({ status: 'success', message: 'Resource connected' });
   } catch (err) {
-    res.status(500).json({ status: 'failed', message: `Endpoint error: ${err}` });
+    res.render('index', { messages: JSON.stringify({ status: 'failed', message: `Function catch error: ${err}` }) });
+    // res.status(500).json({ status: 'failed', message: `Endpoint error: ${err}` });
   }
 });
 

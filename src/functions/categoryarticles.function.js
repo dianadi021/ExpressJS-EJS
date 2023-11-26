@@ -5,7 +5,7 @@ const { CheckingKeyReq, CheckingKeyReqSyntax, CheckingIsNilValue } = require('..
 
 const CreateCategoryArticleData = async (req, res) => {
   try {
-    const { categoryname, description } = req.body ? req.body : JSON.parse(req.body.data);
+    const { categoryname, description } = req.body.data ? JSON.parse(req.body.data) : req.body;
     if (!categoryname) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputCategoryArticles });
     }
@@ -19,7 +19,7 @@ const CreateCategoryArticleData = async (req, res) => {
     if (isCategoryNameWasUsed.length >= 1) {
       return res.status(403).json({ status: 'failed', message: `Nama Kategori sudah tersedia! harap untuk menggunakan yang lain.` });
     }
-    const newCategory = CategoryArticlesModel({ rolename: rolename.toLowerCase(), rolelevel: rolelevel.toLowerCase() });
+    const newCategory = CategoryArticlesModel({ categoryname: categoryname.toLowerCase(), description });
     return await newCategory
       .save()
       .then((result) => res.status(201).json({ status: 'success', message: `Berhasil membuat kategori.` }))
@@ -88,7 +88,7 @@ const UpdateCategoryArticleData = async (req, res) => {
     if (!isDocumentHasInDatabase) {
       return res.status(404).json({ status: 'success', message: `Tidak ada data kategori.` });
     }
-    const { categoryname, description } = req.body ? req.body : JSON.parse(req.body.data);
+    const { categoryname, description } = req.body.data ? JSON.parse(req.body.data) : req.body;
     if (!categoryname) {
       return res.status(404).json({ status: 'failed', message: `Format tidak sesuai!`, format: FormatInputCategoryArticles });
     }
@@ -103,7 +103,7 @@ const UpdateCategoryArticleData = async (req, res) => {
         .status(404)
         .json({ status: 'failed', message: `Format tidak sesuai atau input value kosong!`, format: FormatInputCategoryArticles });
     }
-    const updateCategory = CategoryArticlesModel({ categoryname: categoryname.toLowerCase() });
+    const updateCategory = { categoryname: categoryname.toLowerCase() };
     return await CategoryArticlesModel.findByIdAndUpdate(id, updateCategory)
       .then((result) => res.status(200).json({ status: 'success', message: `Berhasil memperbaharui data kategori.` }))
       .catch((err) => res.status(500).json({ status: 'failed', message: `Gagal memperbaharui data kategori. Function Catch: ${err}` }));

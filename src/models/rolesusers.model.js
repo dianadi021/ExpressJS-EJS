@@ -7,6 +7,7 @@ const RolesUsersSchema = mongoose.Schema(
     rolename: { type: String, required: true },
     rolelevel: { type: Number, required: true },
   },
+  { timestamps: true },
   {
     writeConcern: {
       w: 'majority',
@@ -14,7 +15,6 @@ const RolesUsersSchema = mongoose.Schema(
       wtimeout: 1000,
     },
   },
-  { timestamps: true }
 );
 const RolesUsersModel = mongoose.model('RolesUsers', RolesUsersSchema);
 
