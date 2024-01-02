@@ -1,6 +1,6 @@
-@import url('https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css');
+/* @import url('https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css');
 @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css'); */
 @import url('../../vendor/swiper-10.3.1/swiper-bundle.min.css');
 @import url('../../vendor/bootstrap-5.3.2/css/bootstrap.min.css');
 @import url('../../vendor/fontawesome-free-6.5.1/css/all.min.css');
@@ -181,11 +181,13 @@ nav#main-menu {
     right: 0;
     width: 300px;
     height: 100vh;
-    background-color: #219ebc;
+    /* background-color: #219ebc; */
+    background-color: #023047;
     text-align: center;
     transition: all 0.4s ease 0s;
     transform: translateX(300px);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
+    text-transform: capitalize;
     z-index: 100;
 }
 
@@ -215,8 +217,9 @@ nav#main-menu ul li {
 }
 
 nav#main-menu ul li:hover {
-    background-color: #023047;
-    border-bottom: 5px dotted #8ecae6;
+    /* background-color: #023047; */
+    background-color: #034363;
+    /* border-bottom: 5px dotted #8ecae6; */
 }
 
 nav#main-menu ul li a {
@@ -234,6 +237,11 @@ nav#main-menu ul li a:active {
     color: #ffb703;
     background-color: #023047;
     border-bottom: 5px dotted #8ecae6;
+}
+
+nav#main-menu ul#user-session{
+    border: 0 transparent;
+    display: flex;
 }
 
 /*CSS FOR MAIN MENU END*/

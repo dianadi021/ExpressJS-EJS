@@ -1,19 +1,20 @@
 /** @format */
 $(document).ready(() => {
-  // EXPRESS.JS SECTION
-  const serverURL = `http://${window.location.host}/assets`;
-  // FOR GITHUB SECTION
-  // const serverURL = `http://${window.location.host}/public/assets`;
-  // const serverURL = 'https://dianadi021.github.io/public/assets';
+  const domain = `${window.location.host}`;
+  const [host, port] = domain.split(':');
+  const path = port == 9000 ? `/assets` : `/public/assets`;
+  const url = host.includes(`github.io`) ? `${domain}/${path}` : `http://${domain}/${path}`;
 
-  $.getScript(serverURL + '/scripts/js/personal-function.js', () => {
+  $.getScript(`${url}/scripts/js/personal-function.js`, () => {
     DisableRightClickOnMouse();
     BannerSwiper();
     CertificateSwiper();
   });
 
-  $.getScript(serverURL + '/views/home.js', async () => {
-    // await CommunityDisplay(serverURL);
-    // await ProjectsDisplay(serverURL);
-  });
+  if (host.includes(`github.io`) || port == 5500) {
+    $.getScript(`${url}/views/home.js`, async () => {
+      await CommunityDisplay(url);
+      await ProjectsDisplay(url);
+    });
+  }
 });
