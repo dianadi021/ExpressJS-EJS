@@ -18,8 +18,7 @@
 
     <meta
       name="description"
-      content="Website ini merupakan situs resmi yang dibuat oleh Dian Adi Nugroho sendiri, untuk kepentingannya sendiri, demi kesenangannya sendiri dan di develop sendiri."
-    />
+      content="Website ini merupakan situs resmi yang dibuat oleh Dian Adi Nugroho sendiri, untuk kepentingannya sendiri, demi kesenangannya sendiri dan di develop sendiri." />
     <meta name="keywords" content="dianadi021, dianskuad, dian nugroho, dian skuad, dian adi nugroho" />
     <meta name="image" content="#" />
     <meta name="author" content="Dian Nugroho" />
@@ -60,7 +59,9 @@
   </head>
   <body id="page-top">
     <header id="slider-container">
-      <div id="hamburger-menu" onclick="TogglerMainMenuHamburger();"><i class="fa-solid fa-bars"></i></div>
+      <div id="hamburger-menu" onclick="TogglerMainMenuHamburger();">
+        <i class="fa-solid fa-bars"></i>
+      </div>
       <nav id="main-menu">
         <legend>menu</legend>
         <ul>
@@ -68,11 +69,13 @@
           <li><a href="#community">community</a></li>
           <li><a href="#certificate">certificate</a></li>
           <li><a href="#projects">projects</a></li>
-          <li><a href="https://dianadi021.github.io/mycv/" target="_blank">curriculum vitae</a></li>
+          <li>
+            <a href="https://dianadi021.github.io/mycv/" target="_blank">curriculum vitae</a>
+          </li>
         </ul>
         <ul id="user-session">
-          <div class="btn btn-primary">login</div>
-          <div class="btn btn-success">daftar</div>
+          <div class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-modal">login</div>
+          <div class="btn btn-success" data-bs-toggle="modal" data-bs-target="#register-modal">daftar</div>
         </ul>
       </nav>
       <div id="banner-swiper" class="swiper">
@@ -85,32 +88,50 @@
               <p>@dianadi021</p>
               <ul id="container-socmed" class="container-content">
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://www.youtube.com/c/diannugroho" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://www.youtube.com/c/diannugroho"
+                    target="_blank">
                     <i class="fab fa-youtube"></i>
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://dianadi021.blogspot.com/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://dianadi021.blogspot.com/"
+                    target="_blank">
                     <i class="fab fa-blogger"></i>
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://id.linkedin.com/in/dianadi021/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://id.linkedin.com/in/dianadi021/"
+                    target="_blank">
                     <i class="fab fa-linkedin"></i>
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://web.facebook.com/dianadi021/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://web.facebook.com/dianadi021/"
+                    target="_blank">
                     <i class="fab fa-facebook"></i>
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://instagram.com/dianadi021/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://instagram.com/dianadi021/"
+                    target="_blank">
                     <i class="fab fa-instagram"></i>
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white mr-3" href="https://twitter.com/dianadi021/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white mr-3"
+                    href="https://twitter.com/dianadi021/"
+                    target="_blank">
                     <i class="fab fa-twitter"></i>
                   </a>
                 </li>
@@ -120,7 +141,10 @@
                   </a>
                 </li>
                 <li class="btn btn-dark">
-                  <a class="social-link rounded-circle text-white" href="https://github.com/dianadi021/" target="_blank">
+                  <a
+                    class="social-link rounded-circle text-white"
+                    href="https://github.com/dianadi021/"
+                    target="_blank">
                     <i class="fab fa-github"></i>
                   </a>
                 </li>
@@ -133,9 +157,9 @@
               <div id="caption-about-me">
                 <h5 class="brd-bt-3 d-inline">Tentang Saya</h5>
                 <p class="p-1">
-                  Dengan kerja keras dan ilmu yang sudah saya peroleh, dapat membuat saya menjadi lebih baik daripada sebelumnya. Dan saya
-                  sudah terbiasa dengan adanya perbedaan pendapat yang terjadi selama proses diskusi. Serta saya sudah terbiasa dalam
-                  bekerjasama dalam kelompok atau kerja tim.
+                  Dengan kerja keras dan ilmu yang sudah saya peroleh, dapat membuat saya menjadi lebih baik daripada
+                  sebelumnya. Dan saya sudah terbiasa dengan adanya perbedaan pendapat yang terjadi selama proses
+                  diskusi. Serta saya sudah terbiasa dalam bekerjasama dalam kelompok atau kerja tim.
                 </p>
                 <div class="btn btn-dark">
                   <a href="https://dianadi021.github.io/mycv/" target="_blank">curriculum vitae</a>
@@ -182,7 +206,10 @@
             <h2 class="brd-bt-3">certificate</h2>
           </div>
           <div class="container">
-            <div id="certificate-swiper1" style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper">
+            <div
+              id="certificate-swiper1"
+              style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
+              class="swiper">
               <div class="swiper-wrapper">
                 <% CertificateDocument.forEach((list) => { const { thumbnailImage, title, description, link } = list; %>
                 <div class="swiper-slide">
@@ -198,7 +225,9 @@
             <div id="certificate-swiper" thumbsSlider="" class="swiper">
               <div class="swiper-wrapper">
                 <% CertificateDocument.forEach((list) => { const { thumbnailImage, title, description, link } = list; %>
-                <div class="swiper-slide"><img src="uploads/images/<%= thumbnailImage %>" alt="<%= title %>" /></div>
+                <div class="swiper-slide">
+                  <img src="uploads/images/<%= thumbnailImage %>" alt="<%= title %>" />
+                </div>
                 <% }) %>
               </div>
             </div>
@@ -231,8 +260,92 @@
     </footer>
     <a id="scroll-top" class="btn btn-dark" href="#page-top"><i class="fa-solid fa-arrow-up"></i></a>
 
+    <div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="login-modal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="login-modal">Login</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="get" action="/users">
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="username" id="username" class="form-control" />
+                <label class="form-label" for="username">Username</label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                <input type="password" id="password" name="password" class="form-control" />
+                <label class="form-label" for="password">Password</label>
+              </div>
+
+              <!-- 2 column grid layout for inline styling -->
+              <div class="row mb-4">
+                <div class="col">
+                  <!-- Simple link -->
+                  <a href="#!">Forgot password?</a>
+                </div>
+              </div>
+
+              <!-- Submit button -->
+              <center>
+                <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
+              </center>
+
+              <!-- Register buttons -->
+              <div class="text-center">
+                <p>Not a member? <a href="#register" data-bs-toggle="modal" data-bs-target="#register-modal">Register</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="register-modal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="register-modal">Register</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post" action="/users">
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="username" id="username" name="username" class="form-control" />
+                <label class="form-label" for="username">Username</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input type="email" id="email" name="email" class="form-control" />
+                <label class="form-label" for="email">Email address</label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                <input type="password" id="password" name="password" class="form-control" />
+                <label class="form-label" for="password">Password</label>
+              </div>
+
+              <!-- Submit button -->
+              <center>
+                <button type="submit" class="btn btn-primary btn-block mb-4">Register</button>
+              </center>
+
+              <!-- Register buttons -->
+              <div class="text-center">
+                <p>already member? <a href="#login" data-bs-toggle="modal" data-bs-target="#login-modal">Login</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- BOOTSTRAP v5.3 -->
-    <script src="assets/vendor/bootstrap-5.3.2/js/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js"></script>
 
     <!-- SWIPER v10 -->
     <script src="assets/vendor/swiper-10.3.1/swiper-bundle.min.js"></script>

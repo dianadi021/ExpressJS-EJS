@@ -1,7 +1,7 @@
 /** @format */
 $(document).ready(() => {
   const domain = `${window.location.host}`;
-  const [host, port] = domain.split(':');
+  const [host, port] = domain.split(":");
   const path = port == 9000 ? `/assets` : `/public/assets`;
   const url = host.includes(`github.io`) ? `${domain}/${path}` : `http://${domain}/${path}`;
 
@@ -9,6 +9,7 @@ $(document).ready(() => {
     DisableRightClickOnMouse();
     BannerSwiper();
     CertificateSwiper();
+    ModalBootstrap();
   });
 
   if (host.includes(`github.io`) || port == 5500) {

@@ -1,6 +1,6 @@
 /** @format */
 
-const { CreateUsersData, GetUsersData, GetUserDetails, UpdateUserData, DeleteUserData } = require('../functions/users.function');
+const { CreateUsersData, LoginUsers, GetUsersData, GetUserDetails, UpdateUserData, DeleteUserData } = require('../functions/users.function');
 const { CheckingTokenAuthorization } = require('../middleware/auth');
 
 const express = require('express');
@@ -11,6 +11,14 @@ router.use(express.json());
 router.post('/users', async (req, res) => {
   try {
     await CreateUsersData(req, res);
+  } catch (err) {
+    res.status(500).json({ status: 'failed', message: `Endpoint error: ${err}` });
+  }
+});
+
+router.post('/users/login', async (req, res) => {
+  try {
+    await LoginUsers(req, res);
   } catch (err) {
     res.status(500).json({ status: 'failed', message: `Endpoint error: ${err}` });
   }
