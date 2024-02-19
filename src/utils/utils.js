@@ -1,24 +1,28 @@
 /** @format */
+export const CheckingIsNilValue = (key) => {
+  if (typeof key === 'bool' || typeof key === 'boolean') {
+    return (key = key ? false : key);
+  }
 
-const CheckingIsNilValue = (key) => {
   if (key == '' || key == ' ') {
     return true;
   }
+
   if (typeof key === 'undefined' || key == null) {
     return true;
-  } else {
-    return false;
   }
+
+  return false;
 };
 
-const CheckingKeyReq = (Req1, Req2, Req3) => {
+export const CheckingKeyReq = (Req1, Req2, Req3) => {
   let RequestSyntax = Object.keys(Req1).length >= 1 ? Req1 : false;
   RequestSyntax = !RequestSyntax ? Req2 : RequestSyntax;
   RequestSyntax = !RequestSyntax ? JSON.parse(Req3) : RequestSyntax;
   return RequestSyntax;
 };
 
-const CheckingKeyReqSyntax = (ValidSyntax, Req1, Req2, Req3) => {
+export const CheckingKeyReqSyntax = (ValidSyntax, Req1, Req2, Req3) => {
   let RequestSyntax = Object.keys(Req1).length > 0 ? Req1 : false;
   RequestSyntax = !RequestSyntax ? Req2 : RequestSyntax;
   RequestSyntax = !RequestSyntax ? JSON.parse(Req3) : RequestSyntax;
@@ -35,14 +39,14 @@ const CheckingKeyReqSyntax = (ValidSyntax, Req1, Req2, Req3) => {
   return flag;
 };
 
-const CheckingObjectValue = (ParentObject, AddKeyObject) => {
+export const CheckingObjectValue = (ParentObject, AddKeyObject) => {
   if (AddKeyObject[Object.keys(AddKeyObject)]) {
     ParentObject[Object.keys(AddKeyObject)] = AddKeyObject[Object.keys(AddKeyObject)] ? AddKeyObject[Object.keys(AddKeyObject)] : null;
   }
   return ParentObject;
 };
 
-const GetFilteredDocument = async (Model, MatchQueries) => {
+export const GetFilteredDocumentByCategories = async (Model, MatchQueries) => {
   let result = await Model.aggregate([
     {
       $lookup: {
@@ -66,10 +70,31 @@ const GetFilteredDocument = async (Model, MatchQueries) => {
   return result;
 };
 
-module.exports = {
-  CheckingIsNilValue,
-  CheckingKeyReq,
-  CheckingKeyReqSyntax,
-  CheckingObjectValue,
-  GetFilteredDocument,
+export const GetUniqFilteredCode = async (Model, length) => {
+  let uniqCode = '';
+  let isDone = false;
+  const char = '1234567890qwertyuiopQWERTYUIOPASDFGHJKLasdfghjklzxcvbnmZXCVBNM';
+
+  while (!isDone) {
+    for (let i = 0; i <= length; i++) {
+      const randomIndex = Math.floor(Math.random() * ((i * char.length) / new Date().getDay()));
+
+      if (randomIndex < char.length) {
+        uniqCode += char[randomIndex];
+      } else {
+        i--;
+      }
+
+      if (i == length) {
+        break;
+      }
+    }
+
+    const isUniqCodeUsed = await Model.aggregate([{ $match: { uniqFilter: uniqCode } }]);
+
+    if (!isUniqCodeUsed.length) {
+      isDone = true;
+      return uniqCode;
+    }
+  }
 };

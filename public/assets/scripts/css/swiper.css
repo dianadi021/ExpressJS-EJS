@@ -1,0 +1,109 @@
+.swiper.verticalSwiper {
+    width: 100%;
+    height: 100%;
+    background: var(--dark);
+}
+
+.verticalSwiper .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.verticalSwiper .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiper.perViewSwiper {
+    width: 100%;
+    height: 100%;
+    background: var(--dark);
+}
+
+.perViewSwiper .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.perViewSwiper .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiper.autoProgressSwiper {
+    width: 100%;
+    height: 50%;
+    background: var(--dark);
+}
+
+.autoProgressSwiper .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.autoProgressSwiper .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.autoplay-progress {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    /* color: var(--swiper-theme-color); */
+    color: var(--orange);
+}
+
+.autoplay-progress svg {
+    --progress: 0;
+    position: absolute;
+    left: 0;
+    top: 0px;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    stroke-width: 4px;
+    /* stroke: var(--swiper-theme-color); */
+    stroke: var(--orange);
+    fill: none;
+    stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
+    stroke-dasharray: 125.6;
+    transform: rotate(-90deg);
+}
+
+#swiper-pagination-edited {
+    right: 50px;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active{
+    background: var(--orange) !important;
+}
+
+#swiper-button-prev-edited, #swiper-button-next-edited{
+    color: var(--orange);
+}

@@ -1,6 +1,5 @@
 /** @format */
-
-const GetCurrentIDNDate = () => {
+export const GetCurrentIDNDate = () => {
   const currentDate = new Date().getDate();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
@@ -10,17 +9,11 @@ const GetCurrentIDNDate = () => {
   return formattedDueDate;
 };
 
-const GetIDNDateFormat = (InputDate) => {
+export const GetIDNDateFormat = (InputDate) => {
   const convertDate = new Date(InputDate);
   return convertDate.toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
 };
 
-const GetIDNMoneyCurrency = (Money) => {
+export const GetIDNMoneyCurrency = (Money) => {
   return Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Money);
-};
-
-module.exports = {
-  GetCurrentIDNDate,
-  GetIDNDateFormat,
-  GetIDNMoneyCurrency,
 };
