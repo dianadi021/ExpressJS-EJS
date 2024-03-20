@@ -10,14 +10,13 @@ export const CreateSellingItem = async (req, res) => {
     const isEmptySelling = CheckingIsNilValue(isSelling);
 
     if (!_idItemName || isEmptyIDItem || isEmptySelling) {
-      res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatSellingItem });
-      return;
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatSellingItem);
     }
 
     const documentsInDB = await ProdukModel.findById(_idItemName);
 
     if (!documentsInDB || !documentsInDB.length) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Produk.`);
     }
 
     const { uniqFilter, itemSellPerPcs } = !documentsInDB.length ? documentsInDB : documentsInDB[0];
@@ -25,7 +24,7 @@ export const CreateSellingItem = async (req, res) => {
     const newSellStock = SellingItemModel({ _idItemName, totalSellStock, description, itemSellPerPcs, uniqFilter });
 
     await newSellStock.save().catch((err) => {
-      return res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Produk! Function Catch: ${err}` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Produk. Function Catch: ${err}`);
     });
 
     const isUniqCodeUsed = await SellingItemModel.aggregate([{ $match: { uniqFilter: uniqFilter } }]);
@@ -35,13 +34,14 @@ export const CreateSellingItem = async (req, res) => {
       setTimeout(async () => {
         const [isSuccessSaved, msg] = await UpdateTotalStockByID(req, res, _id).then((result) => result);
         if (!isSuccessSaved) {
-          reject(res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Produk! Function Catch: ${msg}` }));
+          reject(ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Produk. Function Catch: ${err}`));
         }
-        resolve(res.status(201).json({ status: 'success', messages: `Berhasil menyimpan data Produk. ${msg}` }));
+        console.log(`201 Success created Items`);
+        resolve(ReturnEJSViews(req, res, 'home', 201, false, `Berhasil menyimpan data Produk.`));
       }, 3000);
     });
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Produk. Function Catch: ${err}`);
   }
 };
 
@@ -52,7 +52,7 @@ export const GetSellingItems = async (req, res) => {
     const isHasSyntax = CheckingKeyReqSyntax(syntaxExec, req.body, req.query, req.body.data);
 
     if (!isHasSyntax && Object.keys(CheckingKeyReq(req.body, req.query, req.body.data)).length) {
-      return res.status(404).json({ status: 'failed', messages: `Gagal mengambil data! Query tidak sesuai.` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data! Query filter tidak sesuai.`);
     }
 
     if (isHasSyntax && _idItemName) {
@@ -60,7 +60,7 @@ export const GetSellingItems = async (req, res) => {
       toFilter = _idItemName ? { _idItemName: mongoose.Types.ObjectId(_idItemName) } : toFilter;
 
       const documentsInDB = await SellingItemModel.aggregate([
-        { $project: { _id: 1, itemName: 1, itemCategories: 1, itemBrand: 1 } },
+        { $project: { _id: 1, itemName: 1, itemCategories: 1, itemProduk: 1 } },
         {
           $lookup: {
             from: 'restockitems',
@@ -73,7 +73,7 @@ export const GetSellingItems = async (req, res) => {
       ]);
 
       if (documentsInDB.length) {
-        return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data.`, data: documentsInDB });
+        return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Produk.`, documentsInDB);
       }
     }
 
@@ -90,12 +90,12 @@ export const GetSellingItems = async (req, res) => {
     const documentsInDB = await SellingItemModel.aggregate([{ $project: { _id: 1, _idItemName: 1, totalSellStock: 1 } }]);
 
     if (documentsInDB.length) {
-      return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data.`, data: documentsInDB });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Produk.`, documentsInDB);
     }
 
-    return res.status(404).json({ status: 'success', messages: `Tidak ada data.` });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Produk.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Produk. Function Catch: ${err}`);
   }
 };
 
@@ -108,12 +108,12 @@ export const GetSellingItemByID = async (req, res) => {
     documentsInDB = !documentsInDB ? await SellingItemModel.findById(id) : documentsInDB;
 
     if (!documentsInDB || !documentsInDB.length) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Produk.`);
     }
 
-    return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data.`, data: documentsInDB });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Produk.`, documentsInDB);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Produk. Function Catch: ${err}`);
   }
 };
 
@@ -124,14 +124,13 @@ export const UpdateSellingItemByID = async (req, res) => {
     const isEmptySelling = CheckingIsNilValue(isSelling);
 
     if (!_idItemName || isEmptyIDItem || isEmptySelling) {
-      res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatSellingItem });
-      return;
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatSellingItem);
     }
 
     const documentsInDB = await ProdukModel.findById(_idItemName);
 
     if (!documentsInDB || !documentsInDB.length) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Produk.`);
     }
 
     let updateItem = {};
@@ -144,14 +143,17 @@ export const UpdateSellingItemByID = async (req, res) => {
     const [isSuccessSaved, msg] = await UpdateTotalStockByID(req, res).then((result) => result);
 
     if (!isSuccessSaved) {
-      return res.status(500).json({ status: 'failed', messages: `Gagal memperbaharui produk Catch: ${msg}` });
+      return ReturnEJSViews(req, res, 'home', 500, true, `Gagal memperbaharui data Produk. Function Catch: ${msg}`);
     }
 
     return await SellingItemModel.findByIdAndUpdate(id, updateItem)
-      .then((result) => res.status(201).json({ status: 'success', messages: `Berhasil memperbaharui Produk. ${msg}` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal memperbaharui produk Catch: ${msg}` }));
+      .then((result) => {
+        console.log(`201 Success updated Items`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil memperbaharui Produk. ${msg}`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Produk. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Produk. Function Catch: ${err}`);
   }
 };
 
@@ -166,13 +168,16 @@ export const DeleteSellingItemByID = async (req, res, idListItems) => {
           .then((result) => [true, 'Berhasil menghapus data Produk'])
           .catch((err) => [false, err]);
       }
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Produk.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Produk.`);
     }
 
     return await SellingItemModel.findByIdAndRemove(id)
-      .then((result) => res.status(200).json({ status: 'success', messages: `Berhasil menghapus data Produk.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal menghapus data Produk. Function Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success deleted Items`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil menghapus data Produk.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal menghapus data Produk. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Produk. Function Catch: ${err}`);
   }
 };

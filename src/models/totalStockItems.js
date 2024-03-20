@@ -1,16 +1,16 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
+import { mongoose } from '../apps/connect.js';
 
-const TotalStockItemSchema = mongooseDB.Schema(
+const TotalStockItemSchema = mongoose.Schema(
   {
     // HEADER
-    itemBrand: { type: mongooseDB.Schema.Types.ObjectId, ref: 'Brands' },
-    itemCategories: [{ type: mongooseDB.Schema.Types.ObjectId, ref: 'Categories' }],
+    itemBrand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brands' },
+    itemCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categories' }],
     itemName: { type: String, required: true },
     // BODY Auto-Update
-    listRestockItems: [{ type: mongooseDB.Schema.Types.ObjectId, ref: 'Restockitems' }],
-    listSellingItems: [{ type: mongooseDB.Schema.Types.ObjectId, ref: 'SellingItems' }],
+    listRestockItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Restockitems' }],
+    listSellingItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SellingItems' }],
     // FOOTER Auto-Update
     // totalRestockItems: { type: Number }, //Stock yang tersedia (remaining)
     // totalModalAssetItems: { type: Number }, //Uang Modal Restock
@@ -28,9 +28,9 @@ const TotalStockItemSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-export const TotalStockItemModel = mongooseDB.model('TotalStockItem', TotalStockItemSchema);
+export const TotalStockItemModel = mongoose.model('TotalStockItem', TotalStockItemSchema);
 
 export const FormatTotalStockItem = {
   itemName: { type: 'String', required: true },

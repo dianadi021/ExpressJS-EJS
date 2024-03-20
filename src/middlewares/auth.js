@@ -1,8 +1,6 @@
 /** @format */
 
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
+import jwt from 'jsonwebtoken';
 // Postman Basic Auth
 export const PostmanBasicAuth = (req, res, next) => {
   try {
@@ -45,8 +43,6 @@ export const GenerateToken = (req, res) => {
 };
 
 // JWT Auth
-export const jwt = require('jsonwebtoken');
-
 export const CheckToken = (req, res) => {
   try {
     const { token } = CheckingKeyReq(req.body, req.query, req.body.data);

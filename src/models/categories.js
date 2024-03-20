@@ -1,8 +1,8 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
+import { mongoose } from '../apps/connect.js';
 
-const CategoriesSchema = mongooseDB.Schema(
+const CategoriesSchema = mongoose.Schema(
   {
     categoryName: { type: String, required: true },
     description: { type: String },
@@ -17,9 +17,9 @@ const CategoriesSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-export const CategoriesModel = mongooseDB.model('Category', CategoriesSchema);
+export const CategoriesModel = mongoose.model('Category', CategoriesSchema);
 
 export const FormatCategory = {
   categoryName: { type: 'String', required: true },

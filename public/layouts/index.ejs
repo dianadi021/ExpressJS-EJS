@@ -1,0 +1,24 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../templates/head_meta.ejs') %>
+    <%- include('../templates/head_link.ejs') %>
+  </head>
+  <body>
+    <header id="header_banner">
+        <%- include('../templates/header_banner.ejs') %>
+    </header>
+    <nav id="nav_menu">
+        <%- include('../templates/nav_menu.ejs') %>
+    </nav>
+    <main style="color: black;">
+        <%- body %>
+    </main>
+    <aside></aside>
+    <footer></footer>
+    <div id="modal"></div>
+    <%- include('../templates/body_scripts.ejs') %>
+  </body>
+</html>

@@ -1,11 +1,11 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
+import { mongoose } from '../apps/connect.js';
 
-const MainSchema = mongooseDB.Schema(
+const MainSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    categories: [{ type: mongooseDB.Schema.Types.ObjectId, ref: 'Categories' }],
+    categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categories' }],
   },
   { timestamps: true },
   {
@@ -17,9 +17,9 @@ const MainSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-export const MainModel = mongooseDB.model('Main', MainSchema);
+export const MainModel = mongoose.model('Main', MainSchema);
 
 export const FormatMain = {
   name: { type: 'String', required: true },

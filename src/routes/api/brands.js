@@ -1,11 +1,9 @@
 /** @format */
 
-import { createRequire } from 'module';
+import { Router } from 'express';
 import { CreateItemBrand, DeleteBrandByID, GetBrandByID, GetBrands, UpdateBrandByID } from '../../functions/api/brands.js';
-const require = createRequire(import.meta.url);
 
-const express = require('express');
-const router = express.Router();
+const router = new Router();
 
 router.post('/', async (req, res) => {
   try {

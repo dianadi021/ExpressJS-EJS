@@ -1,4 +1,5 @@
 /** @format */
+
 export const CheckingIsNilValue = (key) => {
   if (typeof key === 'bool' || typeof key === 'boolean') {
     return (key = key ? false : key);
@@ -46,30 +47,6 @@ export const CheckingObjectValue = (ParentObject, AddKeyObject) => {
   return ParentObject;
 };
 
-export const GetFilteredDocumentByCategories = async (Model, MatchQueries) => {
-  let result = await Model.aggregate([
-    {
-      $lookup: {
-        from: 'categoryarticles',
-        localField: 'category',
-        foreignField: '_id',
-        as: 'categories_article',
-      },
-    },
-    {
-      $match: {
-        categories_article: {
-          $elemMatch: {
-            categoryname: MatchQueries,
-          },
-        },
-      },
-    },
-  ]);
-  result = result.length < 1 ? (result = await Model.find()) : result;
-  return result;
-};
-
 export const GetUniqFilteredCode = async (Model, length) => {
   let uniqCode = '';
   let isDone = false;
@@ -96,5 +73,68 @@ export const GetUniqFilteredCode = async (Model, length) => {
       isDone = true;
       return uniqCode;
     }
+  }
+};
+
+export const ReturnEJSViews = async (req, res, views = `index`, status = 200, isErr = true, message = `Connected.`, datas) => {
+  const userPlatform = req.headers ? req.headers['user-agent'] : 'Browser';
+
+  if (userPlatform.includes('Postman')) {
+    if (!datas) {
+      return res.status(status).json({ status: isErr, messages: message });
+    }
+
+    return res.status(status).json({ status: isErr, messages: message, datas });
+  }
+
+  if (!datas) {
+    return res.status(status).render(views, {
+      head_title: process.env.PROJECT_TITLE_NAME,
+      head_description: process.env.PROJECT_DESCRIPTION,
+      head_author:  process.env.AUTHOR_PROJECT,
+      head_keywords: process.env.PROJECT_KEYWOARD,
+      description: process.env.PROJECT_DESCRIPTION,
+      status: isErr,
+      messages: message,
+    });
+  }
+
+  return res.status(status).render(views, {
+    head_title: process.env.PROJECT_TITLE_NAME,
+    head_description: process.env.PROJECT_DESCRIPTION,
+    head_author:  process.env.AUTHOR_PROJECT,
+    head_keywords: process.env.PROJECT_KEYWOARD,
+    description: process.env.PROJECT_DESCRIPTION,
+    status: isErr,
+    messages: message,
+    datas,
+  });
+};
+
+import Crypto from 'crypto';
+export const EncodePasswordToHash = (method, pass) => {
+  const hash = Crypto.createHash(method);
+  hash.update(pass);
+  return hash.digest('base64');
+};
+
+export const DecodePasswordToHash = (pass) => {
+  const md5 = EncodePasswordToHash('md5', pass);
+  const sha1 = EncodePasswordToHash('sha1', md5);
+  const sha256 = EncodePasswordToHash('sha256', sha1);
+  return EncodePasswordToHash('sha512', sha256);
+};
+
+export const IsInputWasValidString = (checking, string) => {
+  if (checking == 'username') {
+    return /^[a-z0-9]{4,12}$/g.exec(string);
+  }
+
+  if (checking == 'email') {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g.exec(string);
+  }
+
+  if (checking == 'name') {
+    return /^[a-zA-Z\s]{4,34}$/g.exec(string);
   }
 };

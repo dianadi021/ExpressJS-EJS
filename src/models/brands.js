@@ -1,7 +1,8 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
-const BrandSchema = mongooseDB.Schema(
+import { mongoose } from '../apps/connect.js';
+
+const BrandSchema = mongoose.Schema(
   {
     brandName: { type: String, required: true },
     description: { type: String },
@@ -16,9 +17,9 @@ const BrandSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-export const BrandModel = mongooseDB.model('Brand', BrandSchema);
+export const BrandModel = mongoose.model('Brand', BrandSchema);
 
 export const FormatBrand = {
   brandName: { type: 'String', required: true },

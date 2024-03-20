@@ -1,7 +1,7 @@
 /** @format */
 
 import { BrandModel, FormatBrand } from '../../models/brands.js';
-import { CheckingIsNilValue, CheckingKeyReq, CheckingKeyReqSyntax, CheckingObjectValue } from '../../utils/utils.js';
+import { CheckingIsNilValue, CheckingKeyReq, CheckingKeyReqSyntax, CheckingObjectValue, ReturnEJSViews } from '../../utils/utils.js';
 
 export const CreateItemBrand = async (req, res) => {
   try {
@@ -9,23 +9,26 @@ export const CreateItemBrand = async (req, res) => {
     const isEmptyBrandName = CheckingIsNilValue(brandName);
 
     if (!brandName || isEmptyBrandName) {
-      return res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatBrand });
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatBrand);
     }
 
     const isBrandNameUsed = await BrandModel.aggregate([{ $match: { brandName: brandName.toLowerCase() } }]);
 
     if (isBrandNameUsed.length) {
-      return res.status(403).json({ status: 'failed', messages: `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
     }
 
     const newBrand = BrandModel({ brandName: brandName.toLowerCase(), description });
 
     return await newBrand
       .save()
-      .then((result) => res.status(201).json({ status: 'success', messages: `Berhasil menyimpan data Brand.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Brand. Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success created Brands`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil menyimpan data Brand.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Brand. Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Brand. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Brand. Function Catch: ${err}`);
   }
 };
 
@@ -36,7 +39,7 @@ export const GetBrands = async (req, res) => {
     const isHasSyntax = CheckingKeyReqSyntax(syntaxExec, req.body, req.query, req.body.data);
 
     if (!isHasSyntax && Object.keys(CheckingKeyReq(req.body, req.query, req.body.data)).length) {
-      return res.status(404).json({ status: 'failed', messages: `Gagal mengambil data! Query filter tidak sesuai.` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data! Query filter tidak sesuai.`);
     }
 
     const toFilter = brandName ? { brandName: brandName.toLowerCase() } : false;
@@ -54,12 +57,12 @@ export const GetBrands = async (req, res) => {
         : documentsInDB;
 
     if (documentsInDB.length) {
-      return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data Brand.`, data: documentsInDB });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Brand.`, documentsInDB);
     }
 
-    return res.status(404).json({ status: 'success', messages: `Tidak ada data Brand.` });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Brand. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Brand. Function Catch: ${err}`);
   }
 };
 
@@ -70,12 +73,12 @@ export const GetBrandByID = async (req, res) => {
     const documentsInDB = await BrandModel.findById(id);
 
     if (!documentsInDB) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Brand.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Brand.`);
     }
 
-    return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data Brand.`, data: documentsInDB });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Brand.`, documentsInDB);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Brand. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Brand. Function Catch: ${err}`);
   }
 };
 
@@ -85,7 +88,7 @@ export const UpdateBrandByID = async (req, res) => {
     const documentsInDB = await BrandModel.findById(id);
 
     if (!documentsInDB) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Brand.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Brand.`);
     }
 
     let updateBrand = {};
@@ -94,25 +97,26 @@ export const UpdateBrandByID = async (req, res) => {
     const isEmptyForceUpdate = CheckingIsNilValue(isForceUpdate);
 
     if (!brandName || isEmptyBrandName || isEmptyForceUpdate) {
-      res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatBrand });
-      return;
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatBrand);
     }
 
     const isBrandNameUsed = await BrandModel.aggregate([{ $match: { brandName: brandName.toLowerCase() } }]);
 
     if (!isForceUpdate && isBrandNameUsed.length) {
-      res.status(403).json({ status: 'failed', messages: `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.` });
-      return;
+      return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
     }
 
     updateBrand = CheckingObjectValue(updateBrand, { brandName });
     updateBrand = CheckingObjectValue(updateBrand, { description });
 
     return await BrandModel.findByIdAndUpdate(id, updateBrand)
-      .then((result) => res.status(200).json({ status: 'success', messages: `Berhasil memperbaharui data Brand.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal memperbaharui data Brand. Function Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success updated Brands`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil memperbaharui data Brand.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, true, `Gagal memperbaharui data Brand. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Brand. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Brand. Function Catch: ${err}`);
   }
 };
 
@@ -122,13 +126,16 @@ export const DeleteBrandByID = async (req, res) => {
     const documentsInDB = await BrandModel.findById(id);
 
     if (!documentsInDB) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Brand.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Brand.`);
     }
 
     return await BrandModel.findByIdAndRemove(id)
-      .then((result) => res.status(200).json({ status: 'success', messages: `Berhasil menghapus data Brand.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal menghapus data Brand. Function Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success deleted Brands`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil menghapus data Brand.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal menghapus data Brand. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Brand. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Brand. Function Catch: ${err}`);
   }
 };

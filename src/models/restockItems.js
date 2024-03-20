@@ -1,11 +1,11 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
+import { mongoose } from '../apps/connect.js';
 
-const ReStockItemSchema = mongooseDB.Schema(
+const ReStockItemSchema = mongoose.Schema(
   {
-    unitOfMeasurement: { type: mongooseDB.Schema.Types.ObjectId, ref: 'itemUnitMeasurement' },
-    _idItemName: { type: mongooseDB.Schema.Types.ObjectId, ref: 'TotalStockItems', required: true },
+    unitOfMeasurement: { type: mongoose.Schema.Types.ObjectId, ref: 'itemUnitMeasurement' },
+    _idItemName: { type: mongoose.Schema.Types.ObjectId, ref: 'TotalStockItems', required: true },
     itemQuantity: { type: Number, required: true },
     itemModalPerPcs: { type: Number, required: true },
     barCode: { type: String },
@@ -24,9 +24,9 @@ const ReStockItemSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-export const RestockItemModel = mongooseDB.model('RestockItem', ReStockItemSchema);
+export const RestockItemModel = mongoose.model('RestockItem', ReStockItemSchema);
 
 export const FormatRestockItem = {
   _idItemName: {

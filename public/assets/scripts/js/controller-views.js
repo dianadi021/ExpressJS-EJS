@@ -8,8 +8,19 @@ $(document).ready(() => {
 
   $.getScript(`${url}/scripts/js/personal-function.js`, () => {
     DisableRightClickOnMouse();
-    VerticalSwiper();
-    PerViewSwiper();
+    VerticalSwiper('.swiper.verticalSwiper');
+    PerViewSwiper('.swiper.perViewSwiper');
+  });
+
+  $.getScript(`${url}/scripts/views/index.js`, () => {
+    ModalRegistLoginUser();
+    
+    $('#loginUser').on('hidden.bs.modal', function (e) {
+      $(this).find('input,textarea,select').val('').end().find('input[type=checkbox], input[type=radio]').prop('checked', '').end();
+    });
+    $('#registerUser').on('hidden.bs.modal', function (e) {
+      $(this).find('input,textarea,select').val('').end().find('input[type=checkbox], input[type=radio]').prop('checked', '').end();
+    });
   });
 
   if (host.includes(`github.io`) || port == 5500 || port == 9000) {

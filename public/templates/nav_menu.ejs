@@ -1,0 +1,22 @@
+<ul>
+  <li><a href="/">home</a></li>
+  <li><a href="#">gallery</a></li>
+  <li><a href="#">tentang kami</a></li>
+  <li><a href="#">hubungi kami</a></li>
+  <div class="search-group">
+    <form method="get" action="/api/users">
+      <div class="inner-form">
+        <div class="input-field first-wrap">
+          <div class="svg-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <input id="search" name="search" type="text" placeholder="Mencari apa?" pattern="[^'\x22]+" />
+        </div>
+        <div class="input-field second-wrap">
+          <button class="btn-search" type="submit">CARI</button>
+        </div>
+      </div>
+      <!-- <span class="info">ex. Game, Music, Video, Photography</span> -->
+    </form>
+  </div>
+</ul>

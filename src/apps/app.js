@@ -1,41 +1,48 @@
 /** @format */
 
-import { createRequire } from 'module';
+import { config } from 'dotenv';
+import express from 'express';
+import expressLayouts from 'express-ejs-layouts';
+import session from 'express-session';
+import morgan from 'morgan';
+import passport from 'passport';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { API_ENDPOINT_URL } from '../bridges.js';
 
-const require = createRequire(import.meta.url);
+config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const express = require('express');
 const app = express();
-const port = 9000;
-
-import { brands, categories, ejsIndex, main, restockItems, sellingItems, totalStockItem } from '../bridges.js';
+const SERVER = process.env.URL_SERVER;
+const PORT = process.env.PORT_SERVER || 3000;
 
 try {
   app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ extended: false }));
 
   // Display EJS
+  app.use(expressLayouts);
+  app.set('layout', path.join(__dirname, '../../public/layouts/index'));
   app.set('views', path.join(__dirname, '../../public/views/'));
   app.set('view engine', 'ejs');
   app.use('/public/', express.static(path.join(__dirname, '../../public/')));
 
-  app.use('/', ejsIndex);
+  app.use(morgan('short'));
+  app.use(session({ secret: 'secret-s_UtamaMandiri', resave: false, saveUninitialized: false }));
 
-  // API ENDPOINT
-  app.use('/api/main/', main);
-  app.use('/api/brands', brands);
-  app.use('/api/categories', categories);
-  app.use('/api/items/total/stock', totalStockItem);
-  app.use('/api/items/restock', restockItems);
-  app.use('/api/items/selling', sellingItems);
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-  app.listen(port, () => {
-    console.log(`App listening on http://localhost:${port}`);
+  // API ENDPOINT START
+  API_ENDPOINT_URL(app);
+  // API ENDPOINT END
+
+  app.listen(PORT, () => {
+    console.log(`App listening on http://${SERVER}:${PORT}`);
   });
-} catch (error) {
-  console.log(`App listening on port Error: ${error}`);
+} catch (err) {
+  console.log(`App listening catch err: ${err}`);
 }

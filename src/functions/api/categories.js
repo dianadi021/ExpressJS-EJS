@@ -1,7 +1,7 @@
 /** @format */
 
-import { CategoriesModel, FormatCategory } from '../../models/categories.js';
-import { CheckingIsNilValue, CheckingKeyReq, CheckingKeyReqSyntax, CheckingObjectValue } from '../../utils/utils.js';
+import { CategoriesModel } from '../../models/categories.js';
+import { CheckingIsNilValue, CheckingKeyReq, CheckingKeyReqSyntax, CheckingObjectValue, ReturnEJSViews } from '../../utils/utils.js';
 
 export const CreateCategory = async (req, res) => {
   try {
@@ -9,26 +9,26 @@ export const CreateCategory = async (req, res) => {
     const isEmptyCategoryName = CheckingIsNilValue(categoryName);
 
     if (!categoryName || isEmptyCategoryName) {
-      res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatCategory });
-      return;
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatCategory);
     }
 
     const isCategoryNameUsed = await CategoriesModel.aggregate([{ $match: { categoryName: categoryName.toLowerCase() } }]);
 
     if (isCategoryNameUsed.length) {
-      return res
-        .status(403)
-        .json({ status: 'failed', messages: `Nama kategori sudah terdaftar! Silahkan untuk mengganti nama data Kategori.` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Nama Kategori sudah terdaftar! Silahkan untuk mengganti nama data Kategori.`);
     }
 
     const newCategory = CategoriesModel({ categoryName: categoryName.toLowerCase(), description });
 
     return await newCategory
       .save()
-      .then((result) => res.status(201).json({ status: 'success', messages: `Berhasil menyimpan data Kategori.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Kategori. Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success created Categories`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil menyimpan data Kategori.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Kategori. Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal menyimpan data Kategori. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal menyimpan data Kategori. Function Catch: ${err}`);
   }
 };
 
@@ -39,7 +39,7 @@ export const GetCategories = async (req, res) => {
     const isHasSyntax = CheckingKeyReqSyntax(syntaxExec, req.body, req.query, req.body.data);
 
     if (!isHasSyntax && Object.keys(CheckingKeyReq(req.body, req.query, req.body.data)).length) {
-      return res.status(404).json({ status: 'failed', messages: `Gagal mengambil data! Query tidak sesuai.` });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data! Query filter tidak sesuai.`);
     }
 
     const toFilter = categoryName ? { categoryName: categoryName.toLowerCase() } : false;
@@ -59,12 +59,12 @@ export const GetCategories = async (req, res) => {
         : documentsInDB;
 
     if (documentsInDB.length) {
-      return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data Kategori.`, data: documentsInDB });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Kategori.`, documentsInDB);
     }
 
-    return res.status(404).json({ status: 'success', messages: `Tidak ada data Kategori.` });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Kategori.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Kategori. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Kategori. Function Catch: ${err}`);
   }
 };
 
@@ -75,12 +75,12 @@ export const GetCategoryByID = async (req, res) => {
     const documentsInDB = await CategoriesModel.findById(id);
 
     if (documentsInDB.length) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Kategori.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Kategori.`);
     }
 
-    return res.status(200).json({ status: 'success', messages: `Berhasil mengambil data Kategori.`, data: documentsInDB });
+    return ReturnEJSViews(req, res, 'home', 201, true, `Berhasil mengambil data Kategori.`, documentsInDB);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Kategori. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Kategori. Function Catch: ${err}`);
   }
 };
 
@@ -90,7 +90,7 @@ export const UpdateCategoryByID = async (req, res) => {
     const documentsInDB = await CategoriesModel.findById(id);
 
     if (!documentsInDB) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Kategori.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Kategori.`);
     }
 
     let updateCategory = {};
@@ -99,25 +99,26 @@ export const UpdateCategoryByID = async (req, res) => {
     const isEmptyForceUpdate = CheckingIsNilValue(isForceUpdate);
 
     if (!categoryName || isEmptyCategoryName || isEmptyForceUpdate) {
-      res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatCategory });
-      return;
+      return ReturnEJSViews(req, res, 'home', 400, false, `Format tidak sesuai atau input value kosong!`, FormatCategory);
     }
 
     const isCategoryNameUsed = await CategoriesModel.aggregate([{ $match: { categoryName: categoryName.toLowerCase() } }]);
 
     if (!isForceUpdate && isCategoryNameUsed.length) {
-      res.status(403).json({ status: 'failed', messages: `Nama kategori sudah terdaftar! Silahkan untuk mengganti nama data Kategori.` });
-      return;
+      return ReturnEJSViews(req, res, 'home', 500, false, `Nama Kategori sudah terdaftar! Silahkan untuk mengganti nama data Kategori.`);
     }
 
     updateCategory = CheckingObjectValue(updateCategory, { categoryName });
     updateCategory = CheckingObjectValue(updateCategory, { description });
 
     return await CategoriesModel.findByIdAndUpdate(id, updateCategory)
-      .then((result) => res.status(200).json({ status: 'success', messages: `Berhasil memperbaharui data Kategori.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal memperbaharui data Kategori. Function Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success updated Categories`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil memperbaharui data Kategori.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, true, `Gagal memperbaharui data Kategori. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Kategori. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Kategori. Function Catch: ${err}`);
   }
 };
 
@@ -127,13 +128,16 @@ export const DeleteCategoryByID = async (req, res) => {
     const documentsInDB = await CategoriesModel.findById(id);
 
     if (!documentsInDB) {
-      return res.status(404).json({ status: 'success', messages: `Tidak ada data Kategori.` });
+      return ReturnEJSViews(req, res, 'home', 201, true, `Tidak ada data Kategori.`);
     }
 
     return await CategoriesModel.findByIdAndRemove(id)
-      .then((result) => res.status(200).json({ status: 'success', messages: `Berhasil menghapus data Kategori.` }))
-      .catch((err) => res.status(500).json({ status: 'failed', messages: `Gagal menghapus data Kategori. Function Catch: ${err}` }));
+      .then((result) => {
+        console.log(`201 Success deleted Categories`);
+        ReturnEJSViews(req, res, 'home', 201, true, `Berhasil menghapus data Kategori.`);
+      })
+      .catch((err) => ReturnEJSViews(req, res, 'home', 500, false, `Gagal menghapus data Kategori. Function Catch: ${err}`));
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Gagal mengambil data Kategori. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Gagal mengambil data Kategori. Function Catch: ${err}`);
   }
 };

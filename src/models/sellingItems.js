@@ -1,10 +1,10 @@
 /** @format */
 
-import mongooseDB from '../apps/connect.js';
+import { mongoose } from '../apps/connect.js';
 
-const SellingItemSchema = mongooseDB.Schema(
+const SellingItemSchema = mongoose.Schema(
   {
-    _idItemName: { type: mongooseDB.Schema.Types.ObjectId, ref: 'Restockitems', required: true },
+    _idItemName: { type: mongoose.Schema.Types.ObjectId, ref: 'Restockitems', required: true },
     totalSellStock: { type: Number, required: true },
     itemSellPerPcs: { type: Number, required: true },
     description: { type: String },
@@ -21,12 +21,12 @@ const SellingItemSchema = mongooseDB.Schema(
   }
 );
 
-export const mongoose = mongooseDB;
+export { mongoose };
 
-import { RestockItemModel } from './restockItems.js';
+  import { RestockItemModel } from './restockItems.js';
 export const ProdukModel = RestockItemModel;
 
-export const SellingItemModel = mongooseDB.model('SellingItem', SellingItemSchema);
+export const SellingItemModel = mongoose.model('SellingItem', SellingItemSchema);
 
 export const FormatSellingItem = {
   _idItemName: {

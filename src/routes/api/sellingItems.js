@@ -1,6 +1,6 @@
 /** @format */
 
-import { createRequire } from 'module';
+import { Router } from 'express';
 import {
   CreateSellingItem,
   DeleteSellingItemByID,
@@ -8,10 +8,8 @@ import {
   GetSellingItems,
   UpdateSellingItemByID,
 } from '../../functions/api/sellingItems.js';
-const require = createRequire(import.meta.url);
 
-const express = require('express');
-const router = express.Router();
+const router = new Router();
 
 router.post('/', async (req, res) => {
   try {

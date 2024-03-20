@@ -17,14 +17,14 @@ function DisableRightClickOnMouse() {
   }
 }
 
-const VerticalSwiper = () => {
+const VerticalSwiper = (SwiperName) => {
   const progressCircle = document.querySelector('.autoplay-progress svg');
   const progressContent = document.querySelector('.autoplay-progress span');
-  var swiper = new Swiper('.verticalSwiper', {
+  var swiper = new Swiper(SwiperName, {
     direction: 'vertical',
     loop: true,
     autoplay: {
-      delay: 5000,
+      delay: 5500,
       disableOnInteraction: false,
     },
     pagination: {
@@ -40,13 +40,12 @@ const VerticalSwiper = () => {
   });
 };
 
-const PerViewSwiper = () => {
-  var swiper = new Swiper('.swiper.perViewSwiper', {
+const PerViewSwiper = (SwiperName) => {
+  var swiper = new Swiper(SwiperName, {
     loop: true,
     slidesPerView: 3,
     spaceBetween: 30,
     centeredSlides: true,
-    grabCursor: true,
     autoplay: {
       delay: 2500,
       disableOnInteraction: false,
@@ -63,8 +62,8 @@ const PerViewSwiper = () => {
   });
 };
 
-const AutoProgressSwiperPerView = () => {
-  var swiper = new Swiper('.swiper.autoProgressSwiper', {
+const AutoProgressSwiperPerView = (SwiperName) => {
+  var swiper = new Swiper(SwiperName, {
     loop: true,
     centeredSlides: true,
     autoplay: {

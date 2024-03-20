@@ -1,6 +1,6 @@
 /** @format */
 
-import { createRequire } from 'module';
+import { Router } from 'express';
 import {
   CreateTotalStockItem,
   DeleteTotalStockByID,
@@ -8,10 +8,8 @@ import {
   GetTotalStockItems,
   UpdateTotalStockByID,
 } from '../../functions/api/totalStockItems.js';
-const require = createRequire(import.meta.url);
 
-const express = require('express');
-const router = express.Router();
+const router = new Router();
 
 router.post('/', async (req, res) => {
   try {

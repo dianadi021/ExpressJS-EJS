@@ -1,7 +1,7 @@
 /** @format */
 
-import { FormatMain, MainModel, mongoose } from '../../models/main.js';
-import { CheckingIsNilValue, CheckingKeyReq } from '../../utils/utils.js';
+import { MainModel, mongoose } from '../../models/main.js';
+import { CheckingIsNilValue, CheckingKeyReq, ReturnEJSViews } from '../../utils/utils.js';
 
 export const CreateMain = async (req, res) => {
   try {
@@ -9,14 +9,14 @@ export const CreateMain = async (req, res) => {
     const isEmptyBrandName = CheckingIsNilValue(brandName);
 
     if (!brandName || isEmptyBrandName) {
-      return res.status(404).json({ status: 'failed', messages: `Format tidak sesuai atau input value kosong!`, format: FormatMain });
+      return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
     }
 
     MainModel.find();
     mongoose;
-    return res.status(200).json({ status: 'success', messages: `Oke.`, data: FormatMain });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   }
 };
 
@@ -26,9 +26,9 @@ export const GetMain = async (req, res) => {
     const isEmptyBrandName = CheckingIsNilValue(brandName);
     MainModel.find();
     mongoose;
-    return res.status(200).json({ status: 'success', messages: `Oke.`, data: FormatMain });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   }
 };
 
@@ -37,9 +37,9 @@ export const GetMainByID = async (req, res) => {
     const { id } = req.params;
     MainModel.find();
     mongoose;
-    return res.status(200).json({ status: 'success', messages: `Oke.`, data: FormatMain });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   }
 };
 
@@ -62,9 +62,9 @@ export const UpdateMainByID = async (req, res) => {
     }
 
     mongoose;
-    return res.status(200).json({ status: 'success', messages: `Oke.`, data: FormatMain });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   }
 };
 
@@ -73,8 +73,8 @@ export const DeleteMainByID = async (req, res) => {
     const { id } = req.params;
     MainModel.find();
     mongoose;
-    return res.status(200).json({ status: 'success', messages: `Oke.`, data: FormatMain });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   } catch (err) {
-    return res.status(500).json({ status: 'failed', messages: `Fail. Function Catch: ${err}` });
+    return ReturnEJSViews(req, res, 'home', 500, false, `Nama Brand sudah terdaftar! Silahkan untuk mengganti nama data Brand.`);
   }
 };

@@ -1,25 +1,26 @@
 /** @format */
 
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const mongoose = require('mongoose');
+import { config } from 'dotenv';
+import mongoose from 'mongoose';
 
-const dbName = 's_UtamaMandiri';
-const localServer = `mongodb://localhost:27017/${dbName}`;
+config();
 
-export const mongoConnect = async () => {
-  try {
-    await mongoose
-      .connect(`${localServer}`, { useFindAndModify: true, useNewUrlParser: true, useUnifiedTopology: true })
-      .then((result) => {
-        console.log('Success connected to MongoDB!');
-      })
-      .catch((err) => {
-        console.error(`Connection error to MongoDB ${err}`);
-      });
-  } catch (err) {
-    console.error(`Connection error to MongoDB ${err}`);
-  }
-};
+const URL_SERVER = process.env.URL_SERVER || `localhost`;
+const DB_NAME = process.env.DB_NAME;
+const DB_SERVER = `mongodb://${URL_SERVER}:27017/${DB_NAME}`;
 
-export default mongoose;
+try {
+  await mongoose
+    .connect(`${DB_SERVER}`, { useFindAndModify: true, useNewUrlParser: true, useUnifiedTopology: true })
+    .then((result) => {
+      console.log('Success connected to MongoDB!');
+    })
+    .catch((err) => {
+      console.error(`Connection error to MongoDB catch: ${err}`);
+    });
+} catch (err) {
+  console.error(`Connection error to MongoDB catch: ${err}`);
+}
+
+export { mongoose };
+
