@@ -1,5 +1,5 @@
 {
-  "name": "s.utma_mandiri-EJS",
+  "name": "ExpressJS-EJS",
   "version": "1.0.0",
   "description": "Simple CRUD yang dibuat menggunakan NodeJS [Express, Mongoose, JWT]",
   "main": "index.js",
@@ -10,24 +10,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skuadproduction/s.utma_mandiri-EJS.git"
+    "url": "git+https://github.com/dianadi021/ExpressJS-EJS.git"
   },
   "keywords": [
     "nodejs",
     "expressjs",
     "mongoose",
     "JWT",
-    "skuadproduction",
+    "dianadi021",
     "mongodb",
     "rest-api",
     "postman-api"
   ],
-  "author": "skuadproduction",
+  "author": "dianadi021",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/skuadproduction/s.utma_mandiri-EJS/issues"
+    "url": "https://github.com/dianadi021/ExpressJS-EJS/issues"
   },
-  "homepage": "https://github.com/skuadproduction/s.utma_mandiri-EJS#readme",
+  "homepage": "https://github.com/dianadi021/ExpressJS-EJS#readme",
   "devDependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
